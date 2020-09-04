@@ -1,3 +1,5 @@
+![schemaperfect logo](https://repository-images.githubusercontent.com/217530364/e1f8ab00-eed0-11ea-9ff8-c58c366a0b10)
+
 # schemaperfect
 
 Auto-generate Python APIs from JSON schema specifications
