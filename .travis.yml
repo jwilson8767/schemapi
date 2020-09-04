@@ -14,7 +14,7 @@ matrix:
 env:
   global:
     - TEST_DEPS="pytest pytest-cov"
-    - TEST_DIR=/tmp/_schemapi/
+    - TEST_DIR=/tmp/_schemaperfect/
 
 
 before_install:
@@ -26,4 +26,4 @@ install:
 
 script:
   - mkdir -p $TEST_DIR;
-  - cd $TEST_DIR && python -m pytest --pyargs --doctest-modules schemapi --cov-report term-missing --cov=schemapi;
+  - cd $TEST_DIR && python -m pytest --pyargs --doctest-modules schemaperfect --cov-report term-missing --cov=schemaperfect;

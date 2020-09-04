@@ -1,5 +1,5 @@
 import pytest
-from schemapi import SchemaBase, SchemaModuleGenerator
+from schemaperfect import SchemaBase, SchemaModuleGenerator
 
 
 @pytest.fixture

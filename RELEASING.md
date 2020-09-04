@@ -9,7 +9,7 @@ Releasing a New Version
 
        python setup.py build
    
-   to generate schemapi/version.py
+   to generate schemaperfect/version.py
 
 4. Commit the changes and tag the release; e.g.
 

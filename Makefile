@@ -4,7 +4,7 @@ install:
 	python setup.py install
 
 test:
-	py.test schemapi --doctest-modules
+	python -m pytest schemaperfect --doctest-modules
 
 test-coverage:
-	py.test schemapi --cov=schemapi
+	python -m pytest schemaperfect --cov=schemaperfect

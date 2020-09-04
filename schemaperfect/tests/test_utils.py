@@ -1,7 +1,7 @@
 import pytest
 
 from ..utils import get_valid_identifier
-from ..schemapi import _FromDict
+from ..schemaperfect import _FromDict
 
 
 @pytest.fixture

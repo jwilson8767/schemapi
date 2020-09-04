@@ -3,19 +3,19 @@
 long_description = """
 JSONSchema API Generator
 ========================
-The schemapi_ package provides tools for auto-generation of Python
+The schemaperfect_ package provides tools for auto-generation of Python
 APIs from JSONSchema_ specifications.
 
 See more information in the README_.
 
-.. _README: https://github.com/altair-viz/schemapi/blob/master/README.md
+.. _README: https://github.com/jwilson8767/schemaperfect/blob/master/README.md
 .. _JSONSchema: http://json-schema.org/
-.. _schemapi: https://github.com/altair-viz/schemapi
+.. _schemaperfect: https://github.com/jwilson8767/schemaperfect
 """
 short_version = '0.4.0'
 version = '0.4.0'
-full_version = '0.4.0.dev0+bc58699'
-git_revision = 'bc5869976ee28d8ac826434cfb03ccb9e598cdbe'
-release = False
+full_version = '0.4.0'
+git_revision = '4f3a5b056499004b302f8c08cdad3142707f5806'
+release = True
 if not release:
     version = full_version

@@ -1,7 +1,7 @@
 import jsonschema
 import pytest
 
-from ..schemapi import (UndefinedType, SchemaBase, Undefined, _FromDict,
+from ..schemaperfect import (UndefinedType, SchemaBase, Undefined, _FromDict,
                         SchemaValidationError)
 
 # Make tests inherit from _TestSchema, so that when we test from_dict it won't
@@ -290,6 +290,6 @@ def test_schema_validation_error():
     message = str(the_err)
 
     assert message.startswith('Invalid specification')
-    assert 'test_schemapi.MySchema->a' in message
+    assert 'test_schemaperfect.MySchema->a' in message
     assert "validating {!r}".format(the_err.validator) in message
     assert the_err.message in message
