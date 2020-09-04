@@ -19,7 +19,7 @@ Releasing a New Version
 
    and push tag to origin
 
-5. Upload to PyPI (requires jakevdp's permissions)
+5. Upload to PyPI (requires maintainer permissions)
 
        python setup.py sdist upload
 
