@@ -1,8 +1,5 @@
 """Code generation utilities"""
-import imp
-import json
 import os
-import pkgutil
 import pprint
 import re
 import sys
@@ -12,10 +9,11 @@ import jsonschema
 
 from .utils import (SchemaInfo, is_valid_identifier, indent_docstring, indent_arglist,
                     load_metaschema)
-
+from importlib.util import module_from_spec, spec_from_loader
 
 class CodeSnippet(object):
     """Object whose repr() is a string of code"""
+
     def __init__(self, code):
         self.code = code
 
@@ -46,7 +44,7 @@ def _get_args(info):
         additional = True
     elif info.is_value():
         nonkeyword = True
-        additional=False
+        additional = False
     elif info.is_object():
         invalid_kwds = ({p for p in info.required if not is_valid_identifier(p)} |
                         {p for p in info.properties if not is_valid_identifier(p)})
@@ -55,7 +53,7 @@ def _get_args(info):
         kwds -= required
         nonkeyword = False
         additional = True
-        #additional = info.additionalProperties or info.patternProperties
+        # additional = info.additionalProperties or info.patternProperties
     else:
         raise ValueError("Schema object not understood")
 
@@ -123,12 +121,12 @@ class SchemaClassGenerator(object):
             else:
                 rootschemarepr = rootschema
         return self.schema_class_template.format(
-            classname=self.classname,
-            basename=self.basename,
-            schema=schemarepr,
-            rootschema=rootschemarepr,
-            docstring=self.docstring(indent=4),
-            init_code=self.init_code(indent=4)
+                classname=self.classname,
+                basename=self.basename,
+                schema=schemarepr,
+                rootschema=rootschemarepr,
+                docstring=self.docstring(indent=4),
+                init_code=self.init_code(indent=4)
         )
 
     def docstring(self, indent=0):
@@ -141,8 +139,8 @@ class SchemaClassGenerator(object):
                '',
                info.medium_description]
         if info.description:
-            doc += self._process_description( #remove condition description
-                re.sub(r"\n\{\n(\n|.)*\n\}",'',info.description)).splitlines()
+            doc += self._process_description(  # remove condition description
+                    re.sub(r"\n\{\n(\n|.)*\n\}", '', info.description)).splitlines()
 
         if info.properties:
             nonkeyword, required, kwds, invalid_kwds, additional = _get_args(info)
@@ -151,10 +149,10 @@ class SchemaClassGenerator(object):
                     '----------',
                     '']
             for prop in sorted(required) + sorted(kwds) + sorted(invalid_kwds):
-                    if prop in info.properties:
-                        propinfo = info.properties[prop]
-                        doc += ["{} : {}".format(prop, propinfo.short_description),
-                                "    {}".format(self._process_description(propinfo.description))]
+                if prop in info.properties:
+                    propinfo = info.properties[prop]
+                    doc += ["{} : {}".format(prop, propinfo.short_description),
+                            "    {}".format(self._process_description(propinfo.description))]
         if len(doc) > 1:
             doc += ['']
         return indent_docstring(doc, indent_level=indent, width=100, lstrip=True)
@@ -162,9 +160,9 @@ class SchemaClassGenerator(object):
     def init_code(self, indent=0):
         """Return code suitablde for the __init__ function of a Schema class"""
         info = SchemaInfo(self.schema, rootschema=self.rootschema)
-        nonkeyword, required, kwds, invalid_kwds, additional =_get_args(info)
+        nonkeyword, required, kwds, invalid_kwds, additional = _get_args(info)
 
-        nodefault=set(self.nodefault)
+        nodefault = set(self.nodefault)
         required -= nodefault
         kwds -= nodefault
 
@@ -215,6 +213,7 @@ class SchemaModuleGenerator(object):
 
     from {schemaperfect} import SchemaBase, Undefined
     """)
+
     def __init__(self, schema, root_name='Root', schemaperfect_import='schemaperfect'):
         self.schema = schema
         self.root_name = root_name
@@ -240,7 +239,7 @@ class SchemaModuleGenerator(object):
         root = SchemaClassGenerator(self.root_name, self.schema,
                                     schemarepr=CodeSnippet(schemarepr))
         code.append(root.schema_class())
-        
+
         for name, subschema in definitions.items():
             schemarepr = f"{{'$ref': '#/definitions/{name}'}}"
             rootschemarepr = f'{self.root_name}._schema'
@@ -288,8 +287,8 @@ class SchemaModuleGenerator(object):
         module :
             the dynamically-created module.
         """
-        module = imp.new_module(modulename)
+        module = module_from_spec(spec_from_loader(modulename, loader=None))
+        exec(self.module_code(), module.__dict__)
         if add_to_sys_modules:
             sys.modules[modulename] = module
-        exec(self.module_code(), module.__dict__)
         return module

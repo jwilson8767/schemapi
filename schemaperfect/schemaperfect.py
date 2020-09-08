@@ -4,14 +4,14 @@ import inspect
 import json
 
 import jsonschema
-import six
-
 
 # If DEBUG_MODE is True, then schema objects are converted to dict and
 # validated at creation time. This slows things down, particularly for
 # larger specs, but leads to much more useful tracebacks for the user.
 # Individual schema classes can override this by setting the
 # class-level _class_is_valid_at_instantiation attribute to False
+import typing
+
 DEBUG_MODE = True
 
 
@@ -38,6 +38,7 @@ def debug_mode(arg):
 
 class SchemaValidationError(jsonschema.ValidationError):
     """A wrapper for jsonschema.ValidationError with friendlier traceback"""
+
     def __init__(self, obj, err):
         super(SchemaValidationError, self).__init__(**self._get_contents(err))
         self.obj = obj
@@ -45,20 +46,9 @@ class SchemaValidationError(jsonschema.ValidationError):
     @staticmethod
     def _get_contents(err):
         """Get a dictionary with the contents of a ValidationError"""
-        try:
-            # works in jsonschema 2.3 or later
-            contents = err._contents()
-        except:
-            try:
-                # works in Python >=3.4
-                spec = inspect.getfullargspec(err.__init__)
-            except AttributeError:
-                # works in Python <3.4
-                spec = inspect.getargspec(err.__init__)
-            contents = {key: getattr(err, key) for key in spec.args[1:]}
-        return contents
+        return err._contents()
 
-    def __unicode__(self):
+    def __str__(self):
         cls = self.obj.__class__
         schema_path = ['{}.{}'.format(cls.__module__, cls.__name__)]
         schema_path.extend(self.schema_path)
@@ -73,23 +63,20 @@ class SchemaValidationError(jsonschema.ValidationError):
         {}
         """.format(schema_path, self.validator, self.message)
 
-    if six.PY3:
-        __str__ = __unicode__
-    else:
-        def __str__(self):
-            return six.text_type(self).encode("utf-8")
-
-
 
 class UndefinedType(object):
     """A singleton object for marking undefined attributes"""
     __instance = None
+
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls.__instance, cls):
             cls.__instance = object.__new__(cls, *args, **kwargs)
         return cls.__instance
+
     def __repr__(self):
         return 'Undefined'
+
+
 Undefined = UndefinedType()
 
 
@@ -125,7 +112,7 @@ class SchemaBase(object):
         if DEBUG_MODE and self._class_is_valid_at_instantiation:
             self.to_dict(validate=True)
 
-    def copy(self, deep=True, ignore=()):
+    def copy(self, deep=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None):
         """Return a copy of the object
 
         Parameters
@@ -137,6 +124,7 @@ class SchemaBase(object):
             A list of keys for which the contents should not be copied, but
             only stored by reference.
         """
+
         def _deep_copy(obj, ignore=()):
             if isinstance(obj, SchemaBase):
                 args = tuple(_deep_copy(arg) for arg in obj._args)
@@ -145,14 +133,18 @@ class SchemaBase(object):
                         for k, v in obj._kwds.items()}
                 with debug_mode(False):
                     return obj.__class__(*args, **kwds)
-            elif isinstance(obj, list):
+            elif isinstance(obj, typing.Sequence) and not isinstance(obj, str):
                 return [_deep_copy(v, ignore=ignore) for v in obj]
-            elif isinstance(obj, dict):
+            elif isinstance(obj, typing.Mapping):
                 return {k: (_deep_copy(v, ignore=ignore)
                             if k not in ignore else v)
                         for k, v in obj.items()}
             else:
                 return obj
+        if ignore is None:
+            ignore = ()
+        ignore = frozenset(ignore)
+
         if deep:
             return _deep_copy(self, ignore=ignore)
         else:
@@ -170,7 +162,7 @@ class SchemaBase(object):
                 _getattr = super(SchemaBase, self).__getattribute__
             return _getattr(attr)
 
-    def __setattr__(self, item , val):
+    def __setattr__(self, item, val):
         self._kwds[item] = val
 
     def __getitem__(self, item):
@@ -186,7 +178,7 @@ class SchemaBase(object):
                     if val is not Undefined)
             args = '\n' + ',\n'.join(args)
             return "{0}({{{1}\n}})".format(self.__class__.__name__,
-                                            args.replace('\n', '\n  '))
+                                           args.replace('\n', '\n  '))
         else:
             return "{}({!r})".format(self.__class__.__name__, self._args[0])
 
@@ -195,7 +187,7 @@ class SchemaBase(object):
                 and self._args == other._args
                 and self._kwds == other._kwds)
 
-    def to_dict(self, validate=True, ignore=[], context={}):
+    def to_dict(self, validate=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None):
         """Return a dictionary representation of the object
 
         Parameters
@@ -222,14 +214,20 @@ class SchemaBase(object):
         jsonschema.ValidationError :
             if validate=True and the dict does not conform to the schema
         """
+        if ignore is None:
+            ignore = ()
+        ignore = frozenset(ignore)
+        if context is None:
+            context = {}
+
         sub_validate = 'deep' if validate == 'deep' else False
 
         def _todict(val):
             if isinstance(val, SchemaBase):
                 return val.to_dict(validate=sub_validate, context=context)
-            elif isinstance(val, (list, tuple)):
+            elif isinstance(val, typing.Sequence) and not isinstance(val, str):
                 return [_todict(v) for v in val]
-            elif isinstance(val, dict):
+            elif isinstance(val, typing.Mapping):
                 return {k: _todict(v) for k, v in val.items()
                         if v is not Undefined}
             else:
@@ -250,7 +248,7 @@ class SchemaBase(object):
                 raise SchemaValidationError(self, err)
         return result
 
-    def to_json(self, validate=True, ignore=[], context={},
+    def to_json(self, validate=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None,
                 indent=2, sort_keys=True, **kwargs):
         """Emit the JSON representation for this object as a string.
 
@@ -279,6 +277,11 @@ class SchemaBase(object):
         spec : string
             The JSON specification of the chart object.
         """
+        if ignore is None:
+            ignore = ()
+        if context is None:
+            context = {}
+
         dct = self.to_dict(validate=validate, ignore=ignore, context=context)
         return json.dumps(dct, indent=indent, sort_keys=sort_keys, **kwargs)
 
@@ -405,14 +408,15 @@ class _FromDict(object):
             return hash(s)
         else:
             def _freeze(val):
-                if isinstance(val, dict):
+                if isinstance(val, typing.Mapping):
                     return frozenset((k, _freeze(v)) for k, v in val.items())
-                elif isinstance(val, set):
+                elif isinstance(val, typing.AbstractSet):
                     return frozenset(map(_freeze, val))
-                elif isinstance(val, list) or isinstance(val, tuple):
+                elif isinstance(val, typing.Sequence) and not isinstance(val, str):
                     return tuple(map(_freeze, val))
                 else:
                     return val
+
             return hash(_freeze(schema))
 
     @staticmethod
@@ -451,7 +455,7 @@ class _FromDict(object):
                 else:
                     return self.from_dict(this_constructor, root, this_schema, dct)
 
-        if isinstance(dct, dict):
+        if isinstance(dct, typing.Mapping):
             # TODO: handle schemas for additionalProperties/patternProperties
             props = schema.get('properties', {})
             kwds = {}
@@ -462,7 +466,7 @@ class _FromDict(object):
                 kwds[key] = val
             return constructor(**kwds)
 
-        elif isinstance(dct, list):
+        elif isinstance(dct, typing.Sequence) and not isinstance(dct, str):
             if 'items' in schema:
                 item_schema = schema['items']
                 item_constructor, item_schema = _get_constructor(item_schema)

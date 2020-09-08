@@ -1,10 +1,11 @@
-![schemaperfect logo](https://repository-images.githubusercontent.com/217530364/e1f8ab00-eed0-11ea-9ff8-c58c366a0b10)
+![schemaperfect logo](https://user-images.githubusercontent.com/10873576/92287170-f3dd4c80-eed6-11ea-81e4-2037d8a1e555.png)
 
 # schemaperfect
 
 Auto-generate Python APIs from JSON schema specifications
 
 [![build status](http://img.shields.io/travis/jwilson8767/schemaperfect/master.svg?style=flat)](https://travis-ci.org/jwilson8767/schemaperfect)
+
 
 ## About
 
@@ -111,11 +112,10 @@ When the object is created, its entries are validated using JSONSchema to ensure
 
 ```python
 Person(name='Bob', age='old')
-SchemaValidationError: Invalid specification
+# SchemaValidationError: Invalid specification
 
-        myschema.Person->age, validating 'type'
-
-        'old' is not of type 'integer'
+# myschema.Person->age, validating 'type'
+# 'old' is not of type 'integer'
 ```
 
 By utilizing JSONSchema

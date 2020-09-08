@@ -7,7 +7,7 @@ import re
 import textwrap
 
 import jsonschema
-
+import typing
 
 EXCLUDE_KEYS = ('definitions', 'title', 'description', '$schema', 'id')
 
@@ -87,6 +87,7 @@ def is_valid_identifier(var, allow_unicode=False):
 
 class SchemaProperties(object):
     """A wrapper for properties within a schema"""
+
     def __init__(self, properties, schema, rootschema=None):
         self._properties = properties
         self._schema = schema
@@ -125,6 +126,7 @@ class SchemaProperties(object):
 
 class SchemaInfo(object):
     """A wrapper for inspecting a JSON schema"""
+
     def __init__(self, schema, rootschema=None, validate=False):
         if hasattr(schema, '_schema'):
             if hasattr(schema, '_rootschema'):
@@ -188,16 +190,16 @@ class SchemaInfo(object):
             return 'enum({})'.format(', '.join(map(repr, self.enum)))
         elif self.is_anyOf():
             return 'anyOf({})'.format(', '.join(s.short_description
-                                                 for s in self.anyOf))
+                                                for s in self.anyOf))
         elif self.is_oneOf():
             return 'oneOf({})'.format(', '.join(s.short_description
-                                                 for s in self.oneOf))
+                                                for s in self.oneOf))
         elif self.is_allOf():
             return 'allOf({})'.format(', '.join(s.short_description
-                                                 for s in self.allOf))
+                                                for s in self.allOf))
         elif self.is_not():
             return 'not {}'.format(self.not_.short_description)
-        elif isinstance(self.type, list):
+        elif isinstance(self.type, typing.Sequence) and not isinstance(self.type, str):
             options = []
             subschema = SchemaInfo(dict(**self.schema))
             for typ_ in self.type:
@@ -373,24 +375,24 @@ def indent_docstring(lines, indent_level, width=100, lstrip=True):
             leading_space = len(line) - len(stripped)
             indent = indent_level + leading_space
             wrapper = textwrap.TextWrapper(width=width - indent,
-                                            initial_indent= indent * ' ',
-                                            subsequent_indent=indent * ' ',
-                                            break_long_words=False,
-                                            break_on_hyphens=False,
-                                            drop_whitespace=True)
+                                           initial_indent=indent * ' ',
+                                           subsequent_indent=indent * ' ',
+                                           break_long_words=False,
+                                           break_on_hyphens=False,
+                                           drop_whitespace=True)
             list_wrapper = textwrap.TextWrapper(width=width - indent,
-                                                initial_indent= indent * ' '+'* ',
-                                                subsequent_indent=indent * ' '+ '  ',
+                                                initial_indent=indent * ' ' + '* ',
+                                                subsequent_indent=indent * ' ' + '  ',
                                                 break_long_words=False,
                                                 break_on_hyphens=False,
                                                 drop_whitespace=True)
-            for line in stripped.split("\n"):
-                if line == '':
+            for _line in stripped.split("\n"):
+                if _line == '':
                     final_lines.append('')
-                elif line.startswith('* '):
-                    final_lines.extend(list_wrapper.wrap(line[2:]))
-                else: 
-                    final_lines.extend(wrapper.wrap(line.lstrip()))
+                elif _line.startswith('* '):
+                    final_lines.extend(list_wrapper.wrap(_line[2:]))
+                else:
+                    final_lines.extend(wrapper.wrap(_line.lstrip()))
 
         # If this is the last line, put in an indent
         elif i + 1 == len(lines):
@@ -400,11 +402,11 @@ def indent_docstring(lines, indent_level, width=100, lstrip=True):
             final_lines.append('')
     # Remove any trailing whitespaces on the right side
     stripped_lines = []
-    for i, line in enumerate(final_lines):
+    for i, _line in enumerate(final_lines):
         if i + 1 == len(final_lines):
-            stripped_lines.append(line)
+            stripped_lines.append(_line)
         else:
-            stripped_lines.append(line.rstrip())
+            stripped_lines.append(_line.rstrip())
     # Join it all together
     wrapped = '\n'.join(stripped_lines)
     if lstrip:
