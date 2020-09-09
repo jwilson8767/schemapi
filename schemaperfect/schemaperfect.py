@@ -1,6 +1,5 @@
 import collections
 import contextlib
-import inspect
 import json
 
 import jsonschema
@@ -34,6 +33,23 @@ def debug_mode(arg):
         yield
     finally:
         DEBUG_MODE = original
+
+
+METASCHEMA_VERSION = 'draft7'
+
+
+def set_metaschema_version(version):
+    """Sets the jsonschema schema version to be used when validating json. See [list of supported metaschema versions](https://github.com/Julian/jsonschema/tree/master/jsonschema/schemas)."""
+    import pkgutil
+    global METASCHEMA_VERSION
+    if not pkgutil.get_data('jsonschema', 'schemas/{0}.json'.format(version)):
+        raise ValueError('Unknown metaschema version! The default is "draft7"')
+    METASCHEMA_VERSION = version
+
+
+def get_metaschema_version():
+    """Gets the jsonschema schema version to be used when validating json."""
+    return METASCHEMA_VERSION
 
 
 class SchemaValidationError(jsonschema.ValidationError):
@@ -141,6 +157,7 @@ class SchemaBase(object):
                         for k, v in obj.items()}
             else:
                 return obj
+
         if ignore is None:
             ignore = ()
         ignore = frozenset(ignore)
