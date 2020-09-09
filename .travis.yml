@@ -3,7 +3,6 @@ cache: pip
 sudo: false
 
   
-# Enable 3.7 without globally enabling sudo and xenial
 matrix:
   include:
     - python: 3.6

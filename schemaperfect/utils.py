@@ -53,7 +53,7 @@ def get_valid_identifier(prop, replacement_character='', allow_unicode=False):
     """
     # First substitute-out all non-valid characters.
     flags = re.UNICODE if allow_unicode else re.ASCII
-    valid = re.sub('\W', replacement_character, prop, flags=flags)
+    valid = re.sub(r'\W', replacement_character, prop, flags=flags)
 
     # If nothing is left, use just an underscore
     if not valid:
@@ -61,7 +61,7 @@ def get_valid_identifier(prop, replacement_character='', allow_unicode=False):
 
     # first character must be a non-digit. Prefix with an underscore
     # if needed
-    if re.match('^[\d\W]', valid):
+    if re.match(r'^[d\W]', valid):
         valid = '_' + valid
 
     # if the result is a reserved keyword, then add an underscore at the end
@@ -81,7 +81,7 @@ def is_valid_identifier(var, allow_unicode=False):
         if True, then allow Python 3 style unicode identifiers.
     """
     flags = re.UNICODE if allow_unicode else re.ASCII
-    is_valid = re.match("^[^\d\W]\w*\Z", var, flags)
+    is_valid = re.match(r"^[^\d\W]\w*\Z", var, flags)
     return is_valid and not keyword.iskeyword(var)
 
 
