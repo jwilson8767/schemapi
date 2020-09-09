@@ -8,8 +8,8 @@ from setuptools import setup, find_packages
 # Version info
 MAJOR = 0
 MINOR = 4
-MICRO = 1
-ISRELEASED = True
+MICRO = 2
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 CLASSIFIERS = ["Development Status :: 3 - Alpha",

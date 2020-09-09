@@ -21,7 +21,7 @@ Releasing a New Version
 
 5. Upload to PyPI (requires maintainer permissions)
 
-       python setup.py sdist upload
+       twine upload dist/*
 
 6. Update to the next minor version in setup.py, and set ISRELEASE=False
 
