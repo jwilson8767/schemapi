@@ -2,14 +2,13 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import subprocess
-import imp
 
 from setuptools import setup, find_packages
 
 # Version info
 MAJOR = 0
 MINOR = 4
-MICRO = 0
+MICRO = 1
 ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -131,7 +130,7 @@ def setup_package():
         author="Joshua Wilson",
         author_email="jwilson8767@gmail.com",
         platforms="OS Independent",
-        package_data={'schemaperfect': [os.path.join('schemas', 'json', '*.json')]},
+        package_data={},
         install_requires=["jsonschema"],
         python_requires='>3.6',
         tests_require=["pytest"],

@@ -12,10 +12,10 @@ See more information in the README_.
 .. _JSONSchema: http://json-schema.org/
 .. _schemaperfect: https://github.com/jwilson8767/schemaperfect
 """
-short_version = '0.4.0'
-version = '0.4.0'
-full_version = '0.4.0'
-git_revision = 'f3aa4e92812351983cc9984125c03a005cd8b843'
+short_version = '0.4.1'
+version = '0.4.1'
+full_version = '0.4.1'
+git_revision = 'ebb6cce85987893dd24b8530ac5633f8c8a0a000'
 release = True
 if not release:
     version = full_version
