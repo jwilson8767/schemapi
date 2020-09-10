@@ -1,15 +1,12 @@
 Releasing a New Version
 =======================
+0. Run `python setup.py test`
 
 1. Change the MAJOR, MINOR, MICRO version numbers in setup.py as appropriate
 
 2. Set ISRELEASE=True in setup.py
 
-3. Run
-
-       python setup.py build
-   
-   to generate schemaperfect/version.py
+3. Run `python setup.py build` to generate schemaperfect/version.py
 
 4. Commit the changes and tag the release; e.g.
 

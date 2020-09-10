@@ -3,8 +3,10 @@
 import json
 import keyword
 import pkgutil
+import pprint
 import re
 import textwrap
+from typing import IO, Optional
 
 import jsonschema
 import typing
@@ -414,3 +416,38 @@ def indent_docstring(lines, indent_level, width=100, lstrip=True):
     if lstrip:
         wrapped = wrapped.lstrip()
     return wrapped
+
+
+class CustomPrettyPrinter(pprint.PrettyPrinter):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._dispatch[dict.__repr__] = CustomPrettyPrinter._pprint_dict
+
+    def _format_dict_items(self, items, stream, indent, allowance, context, level):
+        write = stream.write
+        indent += self._indent_per_level
+        delimnl = ',\n' + (indent * ' ')
+        last_index = len(items) - 1
+        for i, (key, ent) in enumerate(items):
+            last = i == last_index
+            rep = self._repr(key, context, level)
+            write(rep)
+            write(': ')
+            self._format(ent, stream, indent,
+                         allowance if last else 1,
+                         context, level)
+            if not last:
+                write(delimnl)
+
+    def _pprint_dict(self, object, stream, indent, allowance, context, level, *args):
+        write = stream.write
+        write('{\n' + (indent * ' '))
+        if self._indent_per_level > 1:
+            write(self._indent_per_level * ' ')
+        length = len(object)
+        if length:
+            items = sorted(object.items(), key=pprint._safe_tuple)
+            self._format_dict_items(items, stream, indent, allowance + 1,
+                                    context, level)
+        write('\n' + (indent * ' ') + '}')

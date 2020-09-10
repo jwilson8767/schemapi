@@ -1,6 +1,9 @@
+import sys
+from textwrap import dedent
+
 import pytest
 
-from ..utils import get_valid_identifier, load_metaschema
+from ..utils import CustomPrettyPrinter, get_valid_identifier, load_metaschema
 from ..schemaperfect import _FromDict, set_metaschema_version
 
 
@@ -39,3 +42,21 @@ def test_metaschema_version(draft_no):
     metaschema = load_metaschema()
     id_key = "$id" if int(draft_no) >= 6 else "id"
     assert metaschema[id_key].split('//')[1].startswith("json-schema.org/draft-{0}".format(draft_no))
+
+def test_custom_pretty_printer(refschema):
+    pretty_printer_kwargs = dict(width=80, compact=False, indent=4)
+    if sys.version_info.major == 3 and sys.version_info.minor >= 8:
+        pretty_printer_kwargs['sort_dicts'] = False
+    pretty_printer = CustomPrettyPrinter(**pretty_printer_kwargs)
+    print(pretty_printer.pformat(object=refschema))
+    assert pretty_printer.pformat(object=refschema) == dedent("""
+    {
+        '$ref': '#/definitions/Foo',
+        'definitions': {
+            'Bar': {'$ref': '#/definitions/Baz'},
+            'Baz': {'type': 'string'},
+            'Foo': {'$ref': '#/definitions/Bar'}
+        }
+    }
+    """).strip('\n')
+

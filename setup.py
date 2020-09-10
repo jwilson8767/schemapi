@@ -1,15 +1,23 @@
-from __future__ import absolute_import, division, print_function
+#!/usr/bin/env python
+"""
+Run `./setup.py test` to execute tests or `python -m pytest schemaperfect --doctest-modules`
+Run `./setup.py build` to build
+
+"""
+
 
 import os
 import subprocess
+import sys
 
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
 
 # Version info
 MAJOR = 0
 MINOR = 4
 MICRO = 2
-ISRELEASED = False
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 CLASSIFIERS = ["Development Status :: 3 - Alpha",
@@ -134,12 +142,28 @@ def setup_package():
         install_requires=["jsonschema"],
         python_requires='>3.6',
         tests_require=["pytest"],
+        cmdclass={
+            'test': PyTest,
+        },
     )
 
     metadata['version'] = get_version_info()[0]
     metadata['packages'] = find_packages()
 
     setup(**metadata)
+
+
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = ['schemaperfect', '--doctest-modules']
+        self.test_suite = True
+
+    def run_tests(self):
+
+        import pytest
+        errcode = pytest.main(self.test_args)
+        sys.exit(errcode)
 
 
 if __name__ == '__main__':
