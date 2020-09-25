@@ -2,7 +2,7 @@
 """
 Run `./setup.py test` to execute tests or `python -m pytest schemaperfect --doctest-modules`
 Run `./setup.py build` to build
-
+Dev install via `pip install -e .`
 """
 
 
