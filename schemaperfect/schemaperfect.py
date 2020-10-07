@@ -57,6 +57,7 @@ class SchemaValidationError(jsonschema.ValidationError):
 
     def __init__(self, obj, err):
         super(SchemaValidationError, self).__init__(**self._get_contents(err))
+        self._err = err
         self.obj = obj
         self.message = str(self)
 
@@ -243,11 +244,18 @@ class SchemaBase(object):
         def _todict(val):
             if isinstance(val, SchemaBase):
                 return val.to_dict(validate=sub_validate, context=context)
-            elif isinstance(val, typing.Sequence) and not isinstance(val, str):
-                return [_todict(v) for v in val]
+            elif isinstance(val, typing.Sequence):
+                if not isinstance(val, str):
+                    return [_todict(v) for v in val]
+                else:
+                    return str(val)
+            elif isinstance(val, (set, frozenset)):
+                return list(sorted(map(_todict, val)))
             elif isinstance(val, typing.Mapping):
                 return {k: _todict(v) for k, v in val.items()
                         if v is not Undefined}
+            elif str(getattr(type(val), '__name__')).startswith('numpy'): # convert most numpy types to python native.
+                return val.item()
             else:
                 return val
 
@@ -255,7 +263,7 @@ class SchemaBase(object):
             result = _todict(self._args[0])
         elif not self._args:
             result = _todict({k: v for k, v in self._kwds.items()
-                              if k not in ignore})
+                              if k not in ignore and v is not Undefined})
         else:
             raise ValueError("{} instance has both a value and properties : "
                              "cannot serialize to dict".format(self.__class__))
