@@ -4,35 +4,46 @@ import json
 
 import jsonschema
 
-# If DEBUG_MODE is True, then schema objects are converted to dict and
+# If ENABLE_VALIDATION_AT_INSTANTIATION is True, then schema objects are converted to dict and
 # validated at creation time. This slows things down, particularly for
 # larger specs, but leads to much more useful tracebacks for the user.
 # Individual schema classes can override this by setting the
 # class-level _class_is_valid_at_instantiation attribute to False
 import typing
 
-DEBUG_MODE = True
+ENABLE_VALIDATION_AT_INSTANTIATION = True
 
+
+def set_valid_at_instantiation(value:bool):
+    global ENABLE_VALIDATION_AT_INSTANTIATION
+    ENABLE_VALIDATION_AT_INSTANTIATION = value
 
 def enable_debug_mode():
-    global DEBUG_MODE
-    DEBUG_MODE = True
+    """
+    @deprecated use set_valid_at_instantiation instead.
+    :return:
+    """
+
+    set_valid_at_instantiation(True)
 
 
 def disable_debug_mode():
-    global DEBUG_MODE
-    DEBUG_MODE = True
+    """
+    @deprecated use set_valid_at_instantiation instead.
+    :return:
+    """
+    set_valid_at_instantiation(False)
 
 
 @contextlib.contextmanager
 def debug_mode(arg):
-    global DEBUG_MODE
-    original = DEBUG_MODE
-    DEBUG_MODE = arg
+    global ENABLE_VALIDATION_AT_INSTANTIATION
+    original = ENABLE_VALIDATION_AT_INSTANTIATION
+    ENABLE_VALIDATION_AT_INSTANTIATION = arg
     try:
         yield
     finally:
-        DEBUG_MODE = original
+        ENABLE_VALIDATION_AT_INSTANTIATION = original
 
 
 METASCHEMA_VERSION = 'draft7'
@@ -126,9 +137,12 @@ class SchemaBase(object):
         # use object.__setattr__ because we override setattr below.
         object.__setattr__(self, '_args', args)
         object.__setattr__(self, '_kwds', kwds)
+        object.__setattr__(self, '_validation_error', None)
 
-        if DEBUG_MODE and self._class_is_valid_at_instantiation:
+        if ENABLE_VALIDATION_AT_INSTANTIATION and self._class_is_valid_at_instantiation:
             self.to_dict(validate=True)
+
+
 
     def copy(self, deep=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None):
         """Return a copy of the object
@@ -206,6 +220,20 @@ class SchemaBase(object):
                 and self._args == other._args
                 and self._kwds == other._kwds)
 
+    @property
+    def is_valid(self) -> bool:
+        """Checks if the instance is currently valid and returns bool. Validation error can be obtained via 'instance.validation_error'"""
+        try:
+            self.to_dict(validate=True)
+            return True
+        except SchemaValidationError:
+            return False
+
+    @property
+    def validation_error(self):
+        """The latest validation error for this instance."""
+        return object.__getattr__(self, '_validation_error')
+
     def to_dict(self, validate=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None):
         """Return a dictionary representation of the object
 
@@ -271,7 +299,8 @@ class SchemaBase(object):
             try:
                 self.validate(result)
             except jsonschema.ValidationError as err:
-                raise SchemaValidationError(self, err)
+                object.__setattr__(self, '_validation_error', SchemaValidationError(self, err))
+                raise self._validation_error
         return result
 
     def to_json(self, validate=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None,
