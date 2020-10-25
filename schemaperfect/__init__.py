@@ -1,7 +1,7 @@
 """
 schemaperfect: tools for generating Python APIs from JSON schemas
 """
-from .schemaperfect import SchemaBase, Undefined
+from .schemaperfect import SchemaBase, Undefined, SchemaValidationError
 from .decorator import schemaclass
 from .utils import SchemaInfo
 from .codegen import SchemaModuleGenerator
@@ -14,4 +14,5 @@ __all__ = (
     "schemaclass",
     "SchemaInfo",
     "SchemaModuleGenerator",
+    "SchemaValidationError"
 )

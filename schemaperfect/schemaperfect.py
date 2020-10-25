@@ -117,6 +117,7 @@ class SchemaBase(object):
     """
     _schema = None
     _rootschema = None
+    _property_names = None
     _class_is_valid_at_instantiation = True
 
     def __init__(self, *args, **kwds):
@@ -128,23 +129,24 @@ class SchemaBase(object):
             raise ValueError("Cannot instantiate object of type {}: "
                              "_schema class attribute is not defined."
                              "".format(self.__class__))
-
+        if self._property_names is None and kwds:
+           self._property_names =  tuple(kwds.keys())
         if kwds:
             assert len(args) == 0
         else:
             assert len(args) in [0, 1]
 
         # use object.__setattr__ because we override setattr below.
-        object.__setattr__(self, '_args', args)
-        object.__setattr__(self, '_kwds', kwds)
-        object.__setattr__(self, '_validation_error', None)
+        self._args = args
+        self._kwds = kwds
+        self._validation_error = None
 
         if ENABLE_VALIDATION_AT_INSTANTIATION and self._class_is_valid_at_instantiation:
             self.to_dict(validate=True)
 
 
 
-    def copy(self, deep=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None):
+    def copy(self, deep=True, exclude: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None):
         """Return a copy of the object
 
         Parameters
@@ -152,51 +154,54 @@ class SchemaBase(object):
         deep : boolean, optional
             if True (default) then return a deep copy of all dict, list, and
             SchemaBase objects within the object structure
-        ignore : list, optional
+        exclude : list, optional
             A list of keys for which the contents should not be copied, but
             only stored by reference.
         """
 
-        def _deep_copy(obj, ignore=()):
+        def _deep_copy(obj, exclude=()):
             if isinstance(obj, SchemaBase):
                 args = tuple(_deep_copy(arg) for arg in obj._args)
-                kwds = {k: (_deep_copy(v, ignore=ignore)
-                            if k not in ignore else v)
+                kwds = {k: (_deep_copy(v, exclude=exclude)
+                            if k not in exclude else v)
                         for k, v in obj._kwds.items()}
                 with debug_mode(False):
                     return obj.__class__(*args, **kwds)
             elif isinstance(obj, typing.Sequence) and not isinstance(obj, str):
-                return [_deep_copy(v, ignore=ignore) for v in obj]
+                return [_deep_copy(v, exclude=exclude) for v in obj]
             elif isinstance(obj, typing.Mapping):
-                return {k: (_deep_copy(v, ignore=ignore)
-                            if k not in ignore else v)
+                return {k: (_deep_copy(v, exclude=exclude)
+                            if k not in exclude else v)
                         for k, v in obj.items()}
             else:
                 return obj
 
-        if ignore is None:
-            ignore = ()
-        ignore = frozenset(ignore)
+        if exclude is None:
+            exclude = ()
+        exclude = frozenset(exclude)
 
         if deep:
-            return _deep_copy(self, ignore=ignore)
+            return _deep_copy(self, exclude=exclude)
         else:
             with debug_mode(False):
                 return self.__class__(*self._args, **self._kwds)
 
     def __getattr__(self, attr):
-        # reminder: getattr is called after the normal lookups
-        if attr in self._kwds:
+        # reminder: getattr is called after the __get_attribute__ lookups
+        if self._property_names is not None and attr in self._property_names and attr in self._kwds:
             return self._kwds[attr]
         else:
             try:
-                _getattr = super(SchemaBase, self).__getattr__
+                _getattr = super().__getattr__
             except AttributeError:
-                _getattr = super(SchemaBase, self).__getattribute__
+                _getattr = super().__getattribute__
             return _getattr(attr)
 
     def __setattr__(self, item, val):
-        self._kwds[item] = val
+        if self._property_names is not None and item in self._property_names:
+            self._kwds[item] = val
+        else:
+            super().__setattr__(item, val)
 
     def __getitem__(self, item):
         return self._kwds[item]
@@ -234,7 +239,11 @@ class SchemaBase(object):
         """The latest validation error for this instance."""
         return object.__getattr__(self, '_validation_error')
 
-    def to_dict(self, validate=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None):
+    def to_dict(self,
+                validate=True,
+                include: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None,
+                exclude: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None,
+                context: typing.Optional[typing.Mapping] = None):
         """Return a dictionary representation of the object
 
         Parameters
@@ -244,9 +253,10 @@ class SchemaBase(object):
             against the schema. If "deep" then recursively validate
             all objects in the spec. This takes much more time, but
             it results in friendlier tracebacks for large objects.
-        ignore : list
-            A list of keys to ignore. This will *not* passed to child to_dict
-            function calls.
+        include : list
+            A list of property names / keys to include. Defaults to self._property_names. Not passed to recursive calls.
+        exclude : list
+            A list of property names / keys to exclude.  Not passed to recursive calls.
         context : dict (optional)
             A context dictionary that will be passed to all child to_dict
             function calls
@@ -261,9 +271,12 @@ class SchemaBase(object):
         jsonschema.ValidationError :
             if validate=True and the dict does not conform to the schema
         """
-        if ignore is None:
-            ignore = ()
-        ignore = frozenset(ignore)
+        if include is None:
+            include = self._property_names
+        if include is not None:
+            include = frozenset(include)
+        if exclude is not None:
+            exclude = frozenset(exclude)
         if context is None:
             context = {}
 
@@ -282,7 +295,7 @@ class SchemaBase(object):
             elif isinstance(val, typing.Mapping):
                 return {k: _todict(v) for k, v in val.items()
                         if v is not Undefined}
-            elif str(getattr(type(val), '__name__')).startswith('numpy'): # convert most numpy types to python native.
+            elif str(getattr(type(val), '__name__')).startswith('numpy'):  # convert most numpy types to python native.
                 return val.item()
             else:
                 return val
@@ -290,8 +303,12 @@ class SchemaBase(object):
         if self._args and not self._kwds:
             result = _todict(self._args[0])
         elif not self._args:
-            result = _todict({k: v for k, v in self._kwds.items()
-                              if k not in ignore and v is not Undefined})
+            _keys = tuple(self._kwds.keys())
+            if include is not None:
+                _keys = tuple(k for k in _keys if k in include)
+            if exclude is not None:
+                _keys = tuple(k for k in _keys if k not in exclude)
+            result = _todict({k: self._kwds[k] for k in _keys if self._kwds[k] is not Undefined})
         else:
             raise ValueError("{} instance has both a value and properties : "
                              "cannot serialize to dict".format(self.__class__))
@@ -303,7 +320,7 @@ class SchemaBase(object):
                 raise self._validation_error
         return result
 
-    def to_json(self, validate=True, ignore: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None,
+    def to_json(self, validate=True, exclude: typing.Optional[typing.Union[typing.AbstractSet, typing.Sequence]] = None, context: typing.Optional[typing.Mapping] = None,
                 indent=2, sort_keys=True, **kwargs):
         """Emit the JSON representation for this object as a string.
 
@@ -314,8 +331,8 @@ class SchemaBase(object):
             against the schema. If "deep" then recursively validate
             all objects in the spec. This takes much more time, but
             it results in friendlier tracebacks for large objects.
-        ignore : list
-            A list of keys to ignore. This will *not* passed to child to_dict
+        exclude : list
+            A list of keys to exclude. This will *not* passed to child to_dict
             function calls.
         context : dict (optional)
             A context dictionary that will be passed to all child to_dict
@@ -332,12 +349,12 @@ class SchemaBase(object):
         spec : string
             The JSON specification of the chart object.
         """
-        if ignore is None:
-            ignore = ()
+        if exclude is None:
+            exclude = ()
         if context is None:
             context = {}
 
-        dct = self.to_dict(validate=validate, ignore=ignore, context=context)
+        dct = self.to_dict(validate=validate, exclude=exclude, context=context)
         return json.dumps(dct, indent=indent, sort_keys=sort_keys, **kwargs)
 
     @classmethod

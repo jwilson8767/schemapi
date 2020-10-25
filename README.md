@@ -118,11 +118,39 @@ Person(name='Bob', age='old')
 # 'old' is not of type 'integer'
 ```
 
+To go a step further, the generated class `Person` can be extended and fit to new purposes:  
+
+```python
+
+class User(Person):
+    _validate_on_instantiation = False # turns off invalidation at instantiation time, requiring we check .is_valid.
+
+    @property
+    def is_adult(self):
+        return self.age > 18
+
+user = User(name="Jim", age=None) 
+
+# check if valid
+print(user.is_valid) # false
+# print the validation error
+print(user.validation_exception) # SchemaValidationError: None is not of type 'integer'
+
+#another way to check validity at runtime
+user.to_dict(validate=True) # raises SchemaValidationError: None is not of type 'integer'
+
+# fixing the issue
+user.age = 33
+
+print(user.is_valid) # true
+
+
+# the special Undefined type.
+
+```
+
 By utilizing JSONSchema
-[definitions and references](https://cswr.github.io/JsonSchema/spec/definitions_references/), much more complicated nested object hierarchies
-are possible, and the generated classes can be subclassed in order to create
-domain-specific APIs for specifying data that can be serialized to and from
-JSON.
+[definitions and references](https://cswr.github.io/JsonSchema/spec/definitions_references/), much more complicated nested object hierarchies are possible, and the generated classes can be subclassed in order to create domain-specific APIs for specifying data that can be serialized to and from JSON.
 
 ## Dynamic Modules
 

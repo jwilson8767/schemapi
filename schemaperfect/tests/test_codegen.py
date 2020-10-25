@@ -38,6 +38,7 @@ def test_module_code(schema):
 
     assert issubclass(Family, SchemaBase)
     assert issubclass(Person, SchemaBase)
+    assert Family._property_names == ('family_name', 'people')
 
     family = Family(family_name='Smith', people=[Person(name='Alice', age=25), Person(name='Bob', age=26)])
     dct = family.to_dict()
@@ -46,6 +47,7 @@ def test_module_code(schema):
     assert family2.to_dict() == dct
 
 
+# noinspection PyUnresolvedReferences
 def test_dynamic_module(schema):
     gen = SchemaModuleGenerator(schema, root_name='Family')
     testmod = gen.import_as('testmod')
@@ -61,3 +63,20 @@ def test_dynamic_module(schema):
     assert dct == {'family_name': 'Smith', 'people': [{'name': 'Alice', 'age': 25}, {'name': 'Bob', 'age': 26}]}
     family2 = Family.from_dict(dct)
     assert family2.to_dict() == dct
+
+    # test extended class with properties
+    class MyFamily(Family):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.dependants = 0
+
+        @property
+        def has_pet(self):
+            return False
+
+    family3 = MyFamily.from_dict(dct)
+    assert family3.dependants == 0
+    family3.dependants = 1
+    assert family3.dependants == 1
+    assert not family3.has_pet
+    assert family3.to_dict() == dct

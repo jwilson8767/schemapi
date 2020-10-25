@@ -88,6 +88,7 @@ class SchemaClassGenerator(object):
         """{docstring}"""
         _schema = {schema!r}
         _rootschema = {rootschema!r}
+        _property_names = {property_names!r}
 
         {init_code}
     ''')
@@ -116,6 +117,10 @@ class SchemaClassGenerator(object):
         rootschema = self.rootschema if self.rootschema is not None else self.schema
         schemarepr = self.schemarepr if self.schemarepr is not None else self.schema
         rootschemarepr = self.rootschemarepr
+        property_names = tuple(self.schema.get('properties', {}).keys())
+        if not len(property_names) and self.schema.get('additionalProperties', True):
+            property_names = None
+
         if rootschemarepr is None:
             if rootschema is self.schema:
                 rootschemarepr = CodeSnippet('_schema')
@@ -127,7 +132,8 @@ class SchemaClassGenerator(object):
                 schema=schemarepr,
                 rootschema=rootschemarepr,
                 docstring=self.docstring(indent=4),
-                init_code=self.init_code(indent=4)
+                init_code=self.init_code(indent=4),
+                property_names=property_names
         )
 
     def docstring(self, indent=0):
@@ -243,7 +249,7 @@ class SchemaModuleGenerator(object):
         pretty_printer = CustomPrettyPrinter(**pretty_printer_kwargs)
         schemarepr = textwrap.indent(pretty_printer.pformat(object=self.schema), 4 * ' ').lstrip()
         root = SchemaClassGenerator(self.root_name, self.schema,
-                                    schemarepr=CodeSnippet(schemarepr))
+                                    schemarepr=CodeSnippet(schemarepr), )
         code.append(root.schema_class())
 
         for name, subschema in definitions.items():

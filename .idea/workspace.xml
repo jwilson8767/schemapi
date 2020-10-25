@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3202888e-038e-47b3-a556-686967bcafd9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemaperfect/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemaperfect/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemaperfect/codegen.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemaperfect/codegen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemaperfect/schemaperfect.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemaperfect/schemaperfect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemaperfect/tests/test_codegen.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemaperfect/tests/test_codegen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemaperfect/tests/test_schemaperfect.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemaperfect/tests/test_schemaperfect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemaperfect/version.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemaperfect/version.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JupyterTrust" id="58e04487-fc85-474a-af83-18673caf8537" />
+  <component name="ProjectId" id="1h3rdHuDEghRtJwov67s6ptZKS9" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ruyaml" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.proportion" value="0.15034965" />
+    <property name="project.structure.side.proportion" value="0.34102142" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+  </component>
+  <component name="RunManager">
+    <configuration name="pytest" type="tests" factoryName="py.test" nameIsGenerated="true">
+      <module name="schemaperfect" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="wsl://UBUNTU1804/home/jwilson/conda/envs/acceladapt2020/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;schemaperfect --doctest-modules&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;CUSTOM&quot;" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3202888e-038e-47b3-a556-686967bcafd9" name="Default Changelist" comment="" />
+      <created>1599250702844</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1599250702844</updated>
+      <workItem from="1599250703953" duration="1538000" />
+      <workItem from="1599252290194" duration="4105000" />
+      <workItem from="1599572834515" duration="693000" />
+      <workItem from="1599576274536" duration="6842000" />
+      <workItem from="1599656777316" duration="15547000" />
+      <workItem from="1599690279003" duration="12331000" />
+      <workItem from="1600998766509" duration="914000" />
+      <workItem from="1601063278217" duration="194000" />
+      <workItem from="1601065958765" duration="660000" />
+      <workItem from="1601901479661" duration="38000" />
+      <workItem from="1601901537394" duration="2722000" />
+      <workItem from="1601919346730" duration="2020000" />
+      <workItem from="1602081621883" duration="2008000" />
+      <workItem from="1602194889497" duration="2862000" />
+      <workItem from="1602554376562" duration="6921000" />
+      <workItem from="1602599850820" duration="806000" />
+      <workItem from="1602696242903" duration="1116000" />
+      <workItem from="1603651126692" duration="6239000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TerminalProjectNonSharedOptionsProvider">
+    <option name="shellPath" value="bash.exe" />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="440" y="129" key="#Project_Structure" timestamp="1599252405334">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="440" y="129" key="#Project_Structure/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599252405334" />
+    <state x="499" y="30" width="1092" height="1050" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603655393546">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="499" y="30" width="1092" height="1050" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1603655393546" />
+    <state x="727" y="357" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1599255475420">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="727" y="357" key="#com.intellij.fileTypes.FileTypeChooser/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599255475420" />
+    <state x="765" y="271" key="#com.intellij.ide.util.MemberChooser" timestamp="1599752546395">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="765" y="271" key="#com.intellij.ide.util.MemberChooser/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599752546395" />
+    <state x="707" y="410" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1599576735967">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="707" y="410" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599576735967" />
+    <state x="92" y="122" width="1736" height="866" key="DiffContextDialog" timestamp="1602080462020">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="92" y="122" width="1736" height="866" key="DiffContextDialog/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1602080462020" />
+    <state x="740" y="346" key="FileChooserDialogImpl" timestamp="1603655538541">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="740" y="346" key="FileChooserDialogImpl/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1603655538541" />
+    <state x="740" y="346" key="FileChooserDialogImpl/0.30.1920.1050@0.30.1920.1050" timestamp="1602554427582" />
+    <state width="1877" height="506" key="GridCell.Tab.0.bottom" timestamp="1599766947721">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="506" key="GridCell.Tab.0.bottom/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599766947721" />
+    <state width="1877" height="506" key="GridCell.Tab.0.center" timestamp="1599766947721">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="506" key="GridCell.Tab.0.center/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599766947721" />
+    <state width="1877" height="506" key="GridCell.Tab.0.left" timestamp="1599766947720">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="506" key="GridCell.Tab.0.left/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599766947720" />
+    <state width="1877" height="506" key="GridCell.Tab.0.right" timestamp="1599766947721">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="506" key="GridCell.Tab.0.right/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599766947721" />
+    <state x="461" y="200" key="SettingsEditor" timestamp="1603655552224">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="461" y="200" key="SettingsEditor/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1603655552224" />
+    <state x="746" y="252" key="VCS.ChangeListViewerDialog" timestamp="1602081871106">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="746" y="252" key="VCS.ChangeListViewerDialog/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1602081871106" />
+    <state x="92" y="122" width="1736" height="866" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog" timestamp="1599253593257">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="92" y="122" width="1736" height="866" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1599253593257" />
+    <state x="667" y="288" width="585" height="592" key="find.popup" timestamp="1603655907194">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="667" y="288" width="585" height="592" key="find.popup/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1603655907194" />
+    <state x="623" y="257" width="672" height="678" key="search.everywhere.popup" timestamp="1603652940767">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="623" y="257" width="672" height="678" key="search.everywhere.popup/-1920.24.1536.840/0.30.1920.1050@0.30.1920.1050" timestamp="1603652940767" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/schemaperfect$pytest_schemaperfect.coverage" NAME="pytest schemaperfect Coverage Results" MODIFIED="1599674302757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/schemaperfect$pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1599758052023" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/schemaperfect$pytest_in_pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1599681525610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

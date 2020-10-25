@@ -220,8 +220,8 @@ def test_copy():
     copy['c'] = 164
     assert myschema.to_dict() == dct
 
-    # If we ignore a value, changing the copy changes the original
-    copy = myschema.copy(deep=True, ignore=['a'])
+    # If we exclude a value, changing the copy changes the original
+    copy = myschema.copy(deep=True, exclude=['a'])
     copy['a']['foo'] = 'new value'
     copy['b'] = ['A', 'B', 'C']
     copy['c'] = 164
