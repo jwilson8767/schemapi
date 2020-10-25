@@ -17,7 +17,7 @@ from setuptools.command.test import test as TestCommand
 MAJOR = 0
 MINOR = 5
 MICRO = 0
-ISRELEASED = False
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 CLASSIFIERS = ["Development Status :: 3 - Alpha",
