@@ -16,10 +16,10 @@ EXCLUDE_KEYS = ('definitions', 'title', 'description', '$schema', 'id')
 
 def load_metaschema():
     """Load the metaschema / jsonschema spec to validate the schema that will be used for code generation."""
-    from schemaperfect.schemaperfect import get_metaschema_version
-    schema = pkgutil.get_data("jsonschema", "schemas/{0}.json".format(get_metaschema_version()))
-    schema = schema.decode('utf-8')
-    return json.loads(schema)
+    from schemaperfect.schemaperfect import get_metaschema_uri
+    from jsonschema_specifications import REGISTRY as SPECIFICATIONS
+    schema = SPECIFICATIONS.contents(get_metaschema_uri())
+    return schema
 
 
 def resolve_references(schema, root=None):

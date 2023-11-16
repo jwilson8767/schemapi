@@ -46,21 +46,26 @@ def debug_mode(arg):
         ENABLE_VALIDATION_AT_INSTANTIATION = original
 
 
-METASCHEMA_VERSION = 'draft7'
+METASCHEMA_URI = 'http://json-schema.org/draft-07/schema'
 
 
 def set_metaschema_version(version):
     """Sets the jsonschema schema version to be used when validating json. See [list of supported metaschema versions](https://github.com/Julian/jsonschema/tree/master/jsonschema/schemas)."""
-    import pkgutil
-    global METASCHEMA_VERSION
-    if not pkgutil.get_data('jsonschema', 'schemas/{0}.json'.format(version)):
-        raise ValueError('Unknown metaschema version! The default is "draft7"')
-    METASCHEMA_VERSION = version
+    global METASCHEMA_URI
+
+    from jsonschema_specifications import REGISTRY as SPECIFICATIONS
+    if 'draft' not in version:
+        DRAFT_URI = f"https://json-schema.org/draft/{version}/schema"
+    else:
+        DRAFT_URI = f"https://json-schema.org/{version}/schema"
+    if DRAFT_URI not in SPECIFICATIONS:
+        raise ValueError('Unknown metaschema version! The default is "draft-07"')
+    METASCHEMA_URI = version
 
 
-def get_metaschema_version():
+def get_metaschema_uri():
     """Gets the jsonschema schema version to be used when validating json."""
-    return METASCHEMA_VERSION
+    return METASCHEMA_URI
 
 
 class SchemaValidationError(jsonschema.ValidationError):
