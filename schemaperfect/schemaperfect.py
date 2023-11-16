@@ -52,15 +52,20 @@ METASCHEMA_URI = 'http://json-schema.org/draft-07/schema'
 def set_metaschema_version(version):
     """Sets the jsonschema schema version to be used when validating json. See [list of supported metaschema versions](https://github.com/Julian/jsonschema/tree/master/jsonschema/schemas)."""
     global METASCHEMA_URI
-
+    import re
+    schema_version_regex = re.compile(r'^(?:(?:https?://json-schema.org/)?draft[-/]?0?)?(\d*-?\d+)(?:$|/schema)',
+                                      re.IGNORECASE)
     from jsonschema_specifications import REGISTRY as SPECIFICATIONS
-    if 'draft' not in version:
-        DRAFT_URI = f"https://json-schema.org/draft/{version}/schema"
-    else:
-        DRAFT_URI = f"https://json-schema.org/{version}/schema"
-    if DRAFT_URI not in SPECIFICATIONS:
-        raise ValueError('Unknown metaschema version! The default is "draft-07"')
-    METASCHEMA_URI = version
+    valid_versions = {
+        schema_version_regex.search(spec).group(1): spec for spec in
+        filter(lambda _x: schema_version_regex.search(_x) is not None, SPECIFICATIONS)
+    }
+    sanitized_version = schema_version_regex.search(version)
+    if sanitized_version:
+        sanitized_version = sanitized_version.group(1)
+    if sanitized_version not in valid_versions:
+        raise ValueError(f'Unknown metaschema version {version}! Valid options are {valid_versions}!')
+    METASCHEMA_URI = valid_versions[sanitized_version]
 
 
 def get_metaschema_uri():
